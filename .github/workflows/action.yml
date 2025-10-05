@@ -1,39 +1,33 @@
-name: CI with Cache
+name: Blank Repo Cache Demo
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
   workflow_dispatch:
 
 jobs:
-  build:
+  cache-demo:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
       - name: prime-cache-fce579d
-        id: cache-deps
+        id: cache-step
         uses: actions/cache@v4
         with:
-          path: |
-            node_modules
-            ~/.npm
-          key: cache-fce579d-${{ runner.os }}-${{ hashFiles('**/package-lock.json') }}
+          path: ~/.cache/demo
+          key: cache-fce579d-${{ runner.os }}-dummy
           restore-keys: |
             cache-fce579d-
 
       - name: Echo cache result
-        run: echo "Cache hit: ${{ steps.cache-deps.outputs.cache-hit }}"
+        run: echo "Cache hit: ${{ steps.cache-step.outputs.cache-hit }}"
 
-      - name: Install dependencies
-        run: npm ci
+      - name: Create dummy cache content
+        run: |
+          mkdir -p ~/.cache/demo
+          echo "This is cached content." > ~/.cache/demo/example.txt
 
-      - name: Run build
-        run: npm run build
+      - name: Show cached file
+        run: cat ~/.cache/demo/example.txt
