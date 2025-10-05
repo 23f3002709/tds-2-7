@@ -21,9 +21,6 @@ jobs:
           restore-keys: |
             cache-fce579d-
 
-      - name: Echo cache result
-        run: echo "Cache hit: ${{ steps.cache-step.outputs.cache-hit }}"
-
       - name: Create dummy cache content
         run: |
           mkdir -p ~/.cache/demo
